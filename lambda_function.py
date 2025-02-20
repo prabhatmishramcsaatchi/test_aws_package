@@ -6,7 +6,7 @@ def lambda_handler(event, context):
     a=10
     b=20    
     print(a+b)
-    # TODO implement
+    print("Done")
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
