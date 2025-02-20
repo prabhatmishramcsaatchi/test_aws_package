@@ -7,6 +7,7 @@ def lambda_handler(event, context):
     b=20    
     print(a+b)
     print("Done")
+    print("Hello")
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
