@@ -1,4 +1,5 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
@@ -6,6 +7,7 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - pip install -r requirements.txt -t lib
+  
   build:
     commands:
       - echo "Zipping deployment package..."
@@ -13,8 +15,16 @@ phases:
       - zip -r9 ../deployment_package.zip .
       - cd ..
       - zip -g deployment_package.zip lambda_function.py
+  
   post_build:
     commands:
-      - echo "Updating lambda Function..."
-      - aws lambda update-function-code --function-name test_aws_package --zip-file fileb://deployment_package.zip
+      - echo "Uploading deployment package to S3..."
+      - aws s3 cp deployment_package.zip s3://xgc-content/library_check/deployment_package.zip
+      - echo "Updating Lambda function using S3 artifact..."
+      - aws lambda update-function-code --function-name test_aws_package --s3-bucket xgc-content --s3-key library_check/deployment_package.zip
       - echo "DONE!!"
+
+artifacts:
+  files:
+    - deployment_package.zip
+  name: lambda-deployment-$(date +%Y-%m-%d)
